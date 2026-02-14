@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    text-align: center;
+}
+
+table {
+    margin: 30px auto;
+}
+
+button {
+    border-color: white;
+    height: 30px;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    background-color: rgb(115, 115, 115);
+    border-radius: 10%;
+}
+
+.rev-cell {
+    background-color: rgb(183, 183, 183);
+}
+
+.control {
+    margin: 10px auto;
+    text-align: center;
+    font-size: 14px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center; /* vertically aligned */
+    gap: 10px;
+
+}
+
+.control-element {
+    margin: 7px;
+    width: 85px;
+    height: 35px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgb(205, 239, 255);
+}
+
+.medium {
+    background-color: rgb(111, 167, 193);
+}
+
+.expert {
+    background-color: rgb(41, 124, 162);
+}
+
