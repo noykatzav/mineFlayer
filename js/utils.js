@@ -25,16 +25,18 @@ function getCellObj(cell) {
 }
 
 function renderBoard(mat, selector) {
-
+    
     var strHTML = '<table><tbody>'
     for (var i = 0; i < mat.length; i++) {
 
         strHTML += '<tr>'
         for (var j = 0; j < mat[0].length; j++) {
 
-            const className = `cell cell-${i}-${j}`
+            var className = `cell cell-${i}-${j}`
 
-            strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i},${j})"></td>`
+            if (mat[i][j].isRevealed) className += ' rev-cell'
+
+            strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i},${j})" oncontextmenu="event.preventDefault(); onRightClick(this, ${i},${j})"></td>`
         }
         strHTML += '</tr>'
     }
