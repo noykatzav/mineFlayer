@@ -2,6 +2,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     color: black;
     text-align: center;
+    background-color: rgb(231, 255, 230);
 }
 
 table {
@@ -9,20 +10,20 @@ table {
 }
 
 button {
-    border-color: white;
+    border-color: rgb(199, 250, 208);
     height: 30px;
 }
 
 .cell {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     text-align: center;
-    background-color: rgb(115, 115, 115);
+    background-color: rgb(164, 164, 164);
     border-radius: 10%;
 }
 
 .rev-cell {
-    background-color: rgb(183, 183, 183);
+    background-color: rgb(208, 208, 208);
 }
 
 .control {
@@ -46,14 +47,22 @@ button {
     justify-content: center;
     align-items: center;
 
-    background-color: rgb(205, 239, 255);
+    background-color:  rgb(160, 230, 158);
+}
+
+.hints {
+    display: flex;
+    margin: 10px auto;
+    width: 150px;
+    font-size: 18px;
 }
 
 .medium {
-    background-color: rgb(111, 167, 193);
+    background-color: rgb(112, 169, 110);
 }
 
 .expert {
-    background-color: rgb(41, 124, 162);
+    background-color: rgb(68, 129, 66);
+    /* rgb(41, 162, 87); */
 }
 
