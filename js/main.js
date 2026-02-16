@@ -3,9 +3,15 @@
 const FLAG = '🏴'
 const EXP = '💥'
 const MARKED_MINE = '💣'
+const LIVES = '❤️'
+const NO_LIVES = '💔'
+const SMILEY_NORMAL = '😊'
+const SMILEY_DEAD = '🤯'
+const SMILEY_WIN = '😎'
 
 var gBoard
 var gIntervalId
+var gTimeoutID
 var gLevel = { SIZE: 4, MINES: 2 }
 const gLevels = {
     beginner: { SIZE: 4, MINES: 2 },
@@ -17,7 +23,8 @@ const gGame = {
     isFirstClick: true,
     revealedCount: 0,
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0,
+    lives: 3
 }
 
 
@@ -26,18 +33,10 @@ function init() {
 
     gBoard = buildBoard(gLevel.SIZE)
 
-    printBoard(gBoard)
-
     renderBoard(gBoard, '.board-container')
-
+    updateLives()
+    renderSmiley(SMILEY_NORMAL)    
     updateTimer()
-}
-
-// function onKey(ev) {
-// }
-
-function onRightClick(elCell, i, j) {        
-    onCellMarked(elCell, i, j)
 }
 
 function onCellClicked(elCell, i, j) {
@@ -46,6 +45,8 @@ function onCellClicked(elCell, i, j) {
         gGame.isOn = true
         startTimer()
         addMinesToBoard({i, j})
+
+        printBoard(gBoard)
     }
     
     gGame.isFirstClick = false
@@ -57,21 +58,30 @@ function onCellClicked(elCell, i, j) {
     if (cell.isMarked) return
     if (cell.isRevealed) return
 
-    revCell(elCell, { i, j })
-
-    if (cell.isMine) {
-        loss()
-        return
+    if (cell.isMine && gGame.lives > 1) {
+        showCellMine({ i, j })
+        updateLives(cell.isMine)
+    } else {
+        revCell(elCell, { i, j })
+        
+        if (cell.isMine && gGame.lives <= 1) {
+            updateLives(cell.isMine)
+            loss()
+            return
+        }
     }
+
 
     if (cell.minesAroundCount === 0) expandReveal(gBoard, elCell, i, j)
     
 
-    if (checkGameOver()) victory()
+    if (checkVictory()) victory()
 }
 
 function onCellMarked(elCell, i, j) {
     
+    if (!gGame.isFirstClick && !gGame.isOn) return 
+
     const cell = getCellObj({ i, j })
 
     if (cell.isRevealed) return
@@ -85,7 +95,7 @@ function onCellMarked(elCell, i, j) {
     elCell.innerText = FLAG
     gGame.markedCount++
 
-    if (checkGameOver()) victory()
+    if (checkVictory()) victory()
 }
 
 function onLevel(elLevel) {
@@ -119,6 +129,19 @@ function expandReveal(board, elCell, i, j) {
             if (!board[i][j].isMine && board[i][j].minesAroundCount === 0) revCell(getCellEl({ i, j }), { i, j })
         }
     }
+}
+
+function showCellMine(cellPos) {
+    renderCell(cellPos, MARKED_MINE)
+
+    const cell = getCellObj(cellPos)
+    
+    if (cell.timeoutID) clearTimeout(cell.timeoutID)
+
+    cell.timeoutID = setTimeout(() => {
+        if (cell.isMarked) return
+        renderCell(cellPos, '')
+        }, 2000) 
 }
 
 function revAllMines() {
@@ -161,6 +184,7 @@ function resetGgame() {
     gGame.revealedCount = 0
     gGame.markedCount = 0
     gGame.secsPassed = 0
+    gGame.lives = 3
 }
 
 function startTimer() {
@@ -172,14 +196,36 @@ function updateTimer() {
     elTimer.innerText = (gGame.secsPassed++) + 's'
 }
 
+function updateLives(isMine) {
+    var livesText
+    const elLives = document.querySelector(`.lives`)
+
+    if (isMine) gGame.lives--
+
+    if (gGame.lives === 0) livesText = NO_LIVES
+    else livesText = LIVES.repeat(gGame.lives)
+    
+    elLives.innerHTML = livesText
+}
+
+function renderSmiley(value) {
+    var livesText
+    const elSmileyButton = document.querySelector(`.smiley`)
+    
+    elSmileyButton.innerHTML = value
+}
+
 function victory() {
-    alert('You Win!!')
     endGame()
+    renderSmiley(SMILEY_WIN)
+    alert('You Win!!')
 }
 
 function loss() {
+    console.log('You lose!')
     endGame()
     revAllMines()
+    renderSmiley(SMILEY_DEAD)
 }
 
 function endGame() {
@@ -191,19 +237,7 @@ function endGame() {
     }
 }
 
-function checkFirstClick() {
-
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard[i].length; j++) {
-            const cell = gBoard[i][j]
-            if (cell.isRevealed) return false
-        }
-    }
-
-    return true
-}
-
-function checkGameOver() {
+function checkVictory() {
 
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[i].length; j++) {
@@ -215,6 +249,7 @@ function checkGameOver() {
 
     return true
 }
+
 
 function buildBoard(size = 4) {
 

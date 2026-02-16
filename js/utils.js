@@ -16,16 +16,16 @@ function printBoard(board) {
   console.log(simpleBoard)
 }
 
-function getCellEl(cell) {
-    return document.querySelector(`.cell-${cell.i}-${cell.j}`)  
+function getCellEl(cellPos) {
+    return document.querySelector(`.cell-${cellPos.i}-${cellPos.j}`)  
 }
 
-function getCellObj(cell) {
-    return gBoard[cell.i][cell.j]
+function getCellObj(cellPos) {
+    return gBoard[cellPos.i][cellPos.j]
 }
 
 function renderBoard(mat, selector) {
-    
+
     var strHTML = '<table><tbody>'
     for (var i = 0; i < mat.length; i++) {
 
@@ -36,7 +36,7 @@ function renderBoard(mat, selector) {
 
             if (mat[i][j].isRevealed) className += ' rev-cell'
 
-            strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i},${j})" oncontextmenu="event.preventDefault(); onRightClick(this, ${i},${j})"></td>`
+            strHTML += `<td class="${className}" onclick="onCellClicked(this, ${i},${j})" oncontextmenu="event.preventDefault(); onCellMarked(this, ${i},${j})"></td>`
         }
         strHTML += '</tr>'
     }
