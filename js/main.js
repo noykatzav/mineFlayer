@@ -9,7 +9,6 @@ const HINT = '💡'
 
 var gBoard
 var gIntervalId
-const gBestScores = { beginner: 0, medium: 0, expert: 0 }
 var gLevel = { NAME: 'Beginner', SIZE: 4, MINES: 2 }
 const gLevels = {
     beginner: { NAME: 'Beginner', SIZE: 4, MINES: 2 },
@@ -31,12 +30,9 @@ const gGame = {
 
 
 function init() {
-    localStorage.clear()
-    localStorage.setItem('bestScores', JSON.stringify(gBestScores))
-    console.log(JSON.parse(localStorage.getItem('bestScores')))
-
-
     gBoard = buildBoard(gLevel.SIZE)
+
+    // localStorage.clear()
 
     renderBoard(gBoard, '.board-container')
     renderControlArea()
@@ -136,6 +132,7 @@ function onLevel(elLevel) {
     const level = elLevel.innerText.toLowerCase()
 
     gLevel = gLevels[level]
+    gGame.score = 0
     restartGame()
 }
 
@@ -285,7 +282,9 @@ function victory() {
     calcScore() // keep before endGame()
     endGame()
     renderControlEl(SMILEY.WIN)
-    alert('You Win!! Score', gGame.score)
+    alert('You Win!! Your Score ' + gGame.score)
+    console.log('You Win!! Score', gGame.score)
+
 }
 
 function loss() {
@@ -298,20 +297,27 @@ function loss() {
 
 function endGame() {
     gGame.isOn = false
-    const level = gLevel.NAME.toLowerCase()
+
 
     if (gIntervalId) {
         clearInterval(gIntervalId)
         gIntervalId = null
     }
 
-    if (gGame.score > gBestScores[level]) {
-        gBestScores[level] = gGame.score
-        localStorage.setItem('bestScores', JSON.stringify(gBestScores))
-        console.log(JSON.parse(localStorage.getItem('bestScores'))
-        )
-    }
+    // update best scores board
+    const level = gLevel.NAME.toLowerCase()
+    var bestScoresLoc = localStorage.getItem('bestScores') || '{}'
 
+    bestScoresLoc = JSON.parse(bestScoresLoc)
+
+    if (!bestScoresLoc[level] || gGame.score > bestScoresLoc[level]) {
+        bestScoresLoc[level] = gGame.score
+        localStorage.setItem('bestScores', JSON.stringify(bestScoresLoc))
+
+    }
+    
+    renderBestScore()
+    console.log('updated board', JSON.parse(localStorage.getItem('bestScores')))
 }
 
 function checkVictory() {
@@ -325,6 +331,21 @@ function checkVictory() {
     }
 
     return true
+}
+
+function renderBestScore() {
+    const bestScoresLoc = JSON.parse(localStorage.getItem('bestScores'))
+
+    var strHTML = '<h2>Best Scores 🏆</h2>\n<p>'
+
+    if (bestScoresLoc.beginner) strHTML += `\nBeginner ${bestScoresLoc.beginner}<br>`
+    if (bestScoresLoc.medium) strHTML += `\nMedium ${bestScoresLoc.medium}<br>`
+    if (bestScoresLoc.expert) strHTML += `\nExpert ${bestScoresLoc.expert}<br>`
+    
+    strHTML += '\n</p>'
+
+    const elContainer = document.querySelector('.best-score-board')
+    elContainer.innerHTML = strHTML
 }
 
 function renderControlArea() {

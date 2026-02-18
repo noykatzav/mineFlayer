@@ -14,6 +14,10 @@ button {
     height: 30px;
 }
 
+h2 {
+    color: rgb(63, 85, 62);
+}
+
 .cell {
     width: 30px;
     height: 30px;
@@ -57,12 +61,19 @@ button {
     font-size: 18px;
 }
 
+.best-score-board {
+    margin: 40px auto;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    text-align: center; 
+}
+
+
 .medium {
     background-color: rgb(112, 169, 110);
 }
 
 .expert {
     background-color: rgb(68, 129, 66);
-    /* rgb(41, 162, 87); */
 }
 
